@@ -62,7 +62,7 @@ export default function Chatbot() {
           </div>
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.map((m) => (
-              <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={m.id} data-testid={`chatbot-message-${m.role}`} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user" ? "bg-[#00E27A] text-[#051910] rounded-br-sm" : "bg-[#15171C] text-white/90 border border-white/[0.06] rounded-bl-sm"}`}>
                   {m.content}
                 </div>

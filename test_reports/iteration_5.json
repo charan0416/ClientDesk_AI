@@ -1,0 +1,29 @@
+{
+  "summary": "Re-verification of two regressions from iteration_4. Both Chatbot UI and Admin Dashboard pass with the new data-testid selectors.",
+  "tested_scope": ["frontend", "integration"],
+  "passed": [
+    "Chatbot: opens, accepts input, sends message",
+    "Chatbot: 1 chatbot-message-user bubble visible with exact text 'I run a dental clinic, can you help?'",
+    "Chatbot: 2 chatbot-message-assistant bubbles (welcome + AI reply with dental-specific content)",
+    "Admin login at /admin/login succeeds with provided credentials",
+    "Admin dashboard renders with stats: Total Leads=5, Appointments=1, Chat Sessions=11",
+    "leads-table renders 5 rows after ~3s wait"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "evidence": {
+    "chatbot": {
+      "user_bubble_count": 1,
+      "user_bubble_text": "I run a dental clinic, can you help?",
+      "assistant_bubble_count": 2,
+      "assistant_preview": ["Hi! I'm the ClientDesk AI assistant...", "What a great business to be in - helping people smile every day! ... AI Rec..."]
+    },
+    "admin": {
+      "stats": {"total_leads": 5, "appointments": 1, "chat_sessions": 11},
+      "leads_table_rows": 5
+    }
+  }
+}
