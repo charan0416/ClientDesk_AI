@@ -1,0 +1,35 @@
+{
+  "summary": "First E2E smoke test of ClientDesk AI. Backend (8/8 critical endpoints) fully working including Claude Sonnet 4.6 chat, leads, appointments, JWT-protected admin routes. Frontend landing, services grid (14 cards), service detail page, contact form, and full admin auth flow (wrong + correct creds -> dashboard with stats and leads table) all verified. One blocker: floating chatbot button is positioned at bottom-right (fixed bottom-6 right-6) and is overlapped by the 'Made with Emergent' badge which intercepts pointer events. The chatbot widget UI is therefore not openable by a regular user click. Backend /api/chat itself works and returns coherent Claude replies.",
+  "tested_scope": ["backend", "frontend", "auth", "integration"],
+  "passed": [
+    "GET /api/ -> 200 {status:ok}",
+    "POST /api/leads -> 200 returns id + fields",
+    "POST /api/appointments -> 200 returns id + fields",
+    "POST /api/chat -> 200 returns coherent Claude Sonnet 4.6 reply",
+    "GET /api/chat/{session_id} -> 200 returns full history (user + assistant)",
+    "POST /api/admin/login wrong creds -> 401 Invalid credentials",
+    "POST /api/admin/login correct creds -> 200 returns JWT token",
+    "GET /api/admin/leads without token -> 403, with token -> 200",
+    "GET /api/admin/appointments with token -> 200",
+    "GET /api/admin/stats with token -> 200 {total_leads, total_appointments, total_chats}",
+    "Landing page loads with hero title, primary CTA, 14 service cards",
+    "Contact form submission (UI) creates lead and shows success state (visible in admin leads table)",
+    "Service detail /service/ai-receptionist loads with title + embedded contact form",
+    "Admin /admin/login: wrong creds shows error",
+    "Admin /admin/login: correct creds redirects to /admin and renders admin-dashboard + leads-table with rows and stats counters"
+  ],
+  "failed": [
+    {
+      "area": "Frontend - Chatbot widget",
+      "issue": "The floating chatbot open button (data-testid='chatbot-open-btn') is positioned at fixed bottom-6 right-6 with z-50, but the Emergent 'Made with Emergent' badge (id='emergent-badge') is overlaid at the same bottom-right corner and intercepts pointer events. Playwright reports the badge intercepting clicks; even with force=True the chat panel input never becomes visible. End users will not be able to open the chatbot at desktop viewport.",
+      "evidence": "Playwright error: '<a id=\"emergent-badge\"> intercepts pointer events'. Screenshot shows chatbot button visually behind the badge. Note backend POST /api/chat is fully functional (verified via curl, returns Claude reply).",
+      "priority": "HIGH"
+    }
+  ],
+  "action_items": [
+    "Reposition or restyle the chatbot floating button so it is not overlapped by the Emergent badge (e.g., move chatbot-open-btn to bottom-24 right-6, or shift the badge, or raise the chat button z-index above the badge while keeping it accessible). Re-test that clicking the button opens the panel and that sending a message renders the assistant reply in the UI."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "~85% (chatbot widget blocked by overlay)"},
+  "retest_needed": true,
+  "full_testing_deferred": true
+}
