@@ -21,10 +21,10 @@ export default function Testimonials() {
           </h2>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {testimonials.map((t, i) => (
-            <div key={i} data-testid={`testimonial-${i}`} className="card p-7 reveal">
+          {testimonials.map((t) => (
+            <div key={`${t.name}-${t.role}`} data-testid={`testimonial-${t.name.replace(/\s+/g, '-').toLowerCase()}`} className="card p-7 reveal">
               <div className="flex gap-0.5 mb-4">
-                {[...Array(5)].map((_, k) => <Star key={k} size={12} className="text-[#00E27A] fill-[#00E27A]"/>)}
+                {[1,2,3,4,5].map((k) => <Star key={`star-${k}`} size={12} className="text-[#00E27A] fill-[#00E27A]"/>)}
               </div>
               <p className="text-white/85 leading-relaxed text-[15px]">"{t.quote}"</p>
               <div className="mt-6 pt-5 border-t border-white/[0.06] flex items-center gap-3">

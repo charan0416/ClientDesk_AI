@@ -1,0 +1,32 @@
+{
+  "summary": "Verified 9-stage lead qualification flow end-to-end via single multi-turn session against POST /api/chat. All 9 turns returned 200 with format rules respected (no '###' headings, no '---' rules, all replies <= 474 chars). Stage 1 (business type), Stage 4 (website), Stage 5 (recommend services), Stage 7 (offer 2 demo slots), Stage 8 (confirm booking) and Stage 9 (thank + strategist + hello@clientdeskai.com + 24h) all landed correctly. /api/leads regression passes (200, lead created). Frontend smoke OK: chatbot-open-btn opens chatbot-window, sending 'Salon' renders both user and assistant bubbles and the bot asked for salon name (Stage 2 intent).",
+  "tested_scope": ["backend", "frontend", "integration"],
+  "passed": [
+    "POST /api/chat — 9 sequential turns on session_id 'qual_test_smoke_1' all returned 200",
+    "Format rules — 0/9 replies contained '###' or '---'; max length 474 chars (<=600 cap)",
+    "Stage 1 acknowledged 'Salon' and asked for salon name",
+    "Stage 5 turn correctly recommended 'Missed-Call Recovery' + 'AI Receptionist' with 'Does this sound like what you need?'",
+    "Stage 7 turn offered two demo slots 'Tomorrow at 11am or 4pm IST'",
+    "Stage 8 turn confirmed 'demo is confirmed for tomorrow at 4pm IST'",
+    "Stage 9 turn thanked user, mentioned strategist + 24 hours + hello@clientdeskai.com",
+    "POST /api/leads — 200, returned full Lead object with new uuid id and status='new'",
+    "Frontend: chatbot-open-btn opens chatbot-window; chatbot-message-user and chatbot-message-assistant both render after sending 'Salon'"
+  ],
+  "failed": [
+    {
+      "area": "backend / chat — conversation memory drift",
+      "issue": "Turns 2, 3 and 6 reset back to Stage 1 ('what type of business do you run?') instead of progressing to the next stage. After 'Glow Hair Studio' (turn 2) and 'Hyderabad' (turn 3) the bot re-greeted and re-asked for business type; after 'Yes that sounds great' (turn 6) it also reset to Stage 1 instead of asking for name/WhatsApp/email. Later turns (4,5,7,8,9) recovered, suggesting the LlmChat session history is being applied inconsistently. Net effect: stages 2, 3 and 7 intents were not produced on the expected turn (intent_hit=false for turns 2/3/6). Replies are still short and well-formatted, but the lead-qualification progression is unreliable on short/ambiguous user messages.",
+      "evidence": "session_id='qual_test_smoke_1'. Turn 2 reply: 'Welcome to ClientDesk AI! ... could you tell me what type of business you run...'. Turn 3 reply: 'Welcome! ... could you tell me what type of business you run...'. Turn 6 reply: 'Welcome! ... What type of business do you run?'",
+      "priority": "MEDIUM"
+    }
+  ],
+  "action_items": [
+    "Investigate why LlmChat with the same session_id occasionally drops prior turns — confirm emergentintegrations is persisting/reloading history (DB-backed or in-memory per request) and that send_message receives the full transcript.",
+    "Consider passing/injecting the prior chat_messages from MongoDB into the LlmChat instance before send_message so each request reliably contains full history (the route currently constructs a fresh LlmChat per call).",
+    "Optional prompt hardening: add explicit instruction like 'If the user has already provided business type, do NOT re-ask Stage 1' and infer current stage from last assistant question."
+  ],
+  "success_rate": {"backend": "100% endpoints up; 6/9 chat turns hit expected stage intent (stage drift on turns 2/3/6)", "frontend": "100% on smoke flow"},
+  "retest_needed": true,
+  "full_testing_deferred": true,
+  "test_credentials": "Not required for tested scope. /app/memory/test_credentials.md not consulted (no auth flows exercised)."
+}

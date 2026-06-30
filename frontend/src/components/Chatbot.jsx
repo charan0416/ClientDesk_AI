@@ -3,6 +3,22 @@ import ReactMarkdown from "react-markdown";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { api } from "../lib/api";
 
+// Extracted markdown component map (stable reference, prevents re-renders + DOM prop spread warnings).
+const MD_COMPONENTS = {
+  p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+  ul: ({ node, ...props }) => <ul className="list-disc pl-4 my-2 space-y-1" {...props} />,
+  ol: ({ node, ...props }) => <ol className="list-decimal pl-4 my-2 space-y-1" {...props} />,
+  li: ({ node, ...props }) => <li className="leading-snug" {...props} />,
+  strong: ({ node, ...props }) => <strong className="text-white font-semibold" {...props} />,
+  em: ({ node, ...props }) => <em className="text-white/90" {...props} />,
+  h1: ({ node, ...props }) => <p className="text-white font-semibold mb-1" {...props} />,
+  h2: ({ node, ...props }) => <p className="text-white font-semibold mb-1" {...props} />,
+  h3: ({ node, ...props }) => <p className="text-white font-semibold mb-1" {...props} />,
+  hr: () => <div className="my-2 border-t border-white/10" />,
+  a: ({ node, ...props }) => <a className="text-[#00E27A] underline-offset-2 hover:underline" target="_blank" rel="noreferrer" {...props} />,
+  code: ({ node, ...props }) => <code className="px-1 py-0.5 rounded bg-white/[0.06] text-[#00E27A] font-mono text-[12px]" {...props} />,
+};
+
 function getSessionId() {
   let id = localStorage.getItem("cdai_chat_session");
   if (!id) { id = `s_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`; localStorage.setItem("cdai_chat_session", id); }
@@ -12,7 +28,7 @@ function getSessionId() {
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { id: "welcome", role: "assistant", content: "Hi! I'm the ClientDesk AI assistant. Tell me what you do and I'll show you exactly how we can help you grow. What's your business?" },
+    { id: "welcome", role: "assistant", content: "Hi! I'm the ClientDesk AI assistant. To suggest the perfect growth setup for you, may I start by asking — **what type of business do you run?** (e.g. salon, clinic, real estate, restaurant, ecom)" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,6 +37,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- scrollRef is a stable ref; scrollTo is a DOM method, not a closure value.
   }, [messages, open]);
 
   const send = async () => {
@@ -67,24 +84,7 @@ export default function Chatbot() {
                 <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user" ? "bg-[#00E27A] text-[#051910] rounded-br-sm" : "bg-[#15171C] text-white/90 border border-white/[0.06] rounded-bl-sm"}`}>
                   {m.role === "assistant" ? (
                     <div className="chat-md">
-                      <ReactMarkdown
-                        components={{
-                          p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                          ul: ({node, ...props}) => <ul className="list-disc pl-4 my-2 space-y-1" {...props} />,
-                          ol: ({node, ...props}) => <ol className="list-decimal pl-4 my-2 space-y-1" {...props} />,
-                          li: ({node, ...props}) => <li className="leading-snug" {...props} />,
-                          strong: ({node, ...props}) => <strong className="text-white font-semibold" {...props} />,
-                          em: ({node, ...props}) => <em className="text-white/90" {...props} />,
-                          h1: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
-                          h2: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
-                          h3: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
-                          hr: () => <div className="my-2 border-t border-white/10" />,
-                          a: ({node, ...props}) => <a className="text-[#00E27A] underline-offset-2 hover:underline" target="_blank" rel="noreferrer" {...props} />,
-                          code: ({node, ...props}) => <code className="px-1 py-0.5 rounded bg-white/[0.06] text-[#00E27A] font-mono text-[12px]" {...props} />,
-                        }}
-                      >
-                        {m.content}
-                      </ReactMarkdown>
+                      <ReactMarkdown components={MD_COMPONENTS}>{m.content}</ReactMarkdown>
                     </div>
                   ) : (
                     m.content

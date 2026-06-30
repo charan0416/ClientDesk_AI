@@ -19,6 +19,7 @@ export default function Navbar() {
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onScroll & setScrolled are stable for the lifetime of this component.
   }, []);
 
   return (

@@ -16,5 +16,6 @@ export default function useReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- IntersectionObserver is a global; all other vars are local to this effect.
   }, []);
 }
