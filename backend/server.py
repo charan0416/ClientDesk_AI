@@ -156,11 +156,29 @@ async def chat(req: ChatRequest):
     user_msg = ChatMessage(session_id=req.session_id, role="user", content=req.message)
     await db.chat_messages.insert_one(user_msg.model_dump())
 
+    # Load prior turns from MongoDB to inject as transcript context (LlmChat is stateless per request).
+    prior = await db.chat_messages.find(
+        {"session_id": req.session_id}, {"_id": 0}
+    ).sort("created_at", 1).to_list(200)
+    if prior and prior[-1].get("role") == "user" and prior[-1].get("content") == req.message:
+        prior = prior[:-1]
+    transcript = "\n".join(
+        f"{'User' if m['role']=='user' else 'Assistant'}: {m['content']}"
+        for m in prior[-30:]
+    ).strip()
+    sys_msg = SYSTEM_PROMPT
+    if transcript:
+        sys_msg += (
+            "\n\n----- CONVERSATION SO FAR (use this to determine the CURRENT stage; never repeat completed stages) -----\n"
+            + transcript
+            + "\n----- END CONVERSATION -----"
+        )
+
     # Build chat with history
     chat_instance = LlmChat(
         api_key=EMERGENT_LLM_KEY,
         session_id=req.session_id,
-        system_message=SYSTEM_PROMPT,
+        system_message=sys_msg,
     ).with_model("anthropic", "claude-sonnet-4-6")
 
     try:

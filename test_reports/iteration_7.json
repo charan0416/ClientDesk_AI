@@ -1,0 +1,32 @@
+{
+  "summary": "RETEST PASSED. Conversation-memory fix (MongoDB-backed 'CONVERSATION SO FAR' transcript injected into system_message) resolves the stage-drift regression reported in iteration_6. Re-ran the same 9-turn lead-qualification scenario on a fresh session_id ('qual_test_retry_2') against POST /api/chat. All 9 turns returned 200, no Stage 1 re-ask on previously-failing turns 2/3/6. 8/9 turns hit the expected stage-intent keyword (T9 is a cosmetic mismatch: bot delivered the '24h + strategist + hello@clientdeskai.com' Stage-9 closing on T8 at the moment of booking, then sent a short warm sign-off on T9). Format rules respected on all 9 turns (no '###', no '---', max length 350 chars, all <=600 cap).",
+  "tested_scope": ["backend"],
+  "passed": [
+    "T1 'Salon' -> Stage 2: 'What's the name of your salon?'",
+    "T2 'Glow Hair Studio' -> Stage 3: 'Which city or area are you based in?' (NO Stage 1 drift)",
+    "T3 'Hyderabad' -> Stage 4: 'Do you currently have a website for Glow Hair Studio...' (NO Stage 1 drift)",
+    "T4 'Yes we have a basic site, glowhair.in' -> Stage 5: asks #1 challenge / missed calls / no-shows / reviews",
+    "T5 'Our biggest pain is too many missed calls...' -> Stage 6: recommends 'AI Receptionist' + 'WhatsApp Booking' with 'Does this sound like what you need?'",
+    "T6 'Yes that sounds great' -> Stage 7: asks name + WhatsApp + email together (NO Stage 1 drift)",
+    "T7 'Priya Sharma, +91 9876543210, priya@glowhair.in' -> Stage 8: offers 'tomorrow at 11am or 4pm IST'",
+    "T8 'Tomorrow 4pm works' -> Stage 9 confirm: 'booked for tomorrow at 4pm IST' + strategist + hello@clientdeskai.com",
+    "T9 'Thanks, looking forward!' -> warm Stage 9 sign-off ('See you tomorrow at 4pm!')",
+    "Format: 0/9 replies contained '###' or '---'; max length 350 chars (<=600 cap)",
+    "All 9 calls returned HTTP 200"
+  ],
+  "failed": [
+    {
+      "area": "backend / chat — minor copy distribution on Stage 9",
+      "issue": "The '24h follow-up' + 'strategist' + 'hello@clientdeskai.com' closing line is emitted on T8 (the confirm-booking turn) rather than being repeated on T9 (the final user 'thanks'). T9 reply is a short warm sign-off only. Not a regression — fully matches the conversational tone — but the spec implied that the '24h + email' closing should land specifically on the final T9 turn.",
+      "evidence": "session_id='qual_test_retry_2'. T8 reply contains 'strategist will reach out via WhatsApp and email' + 'hello@clientdeskai.com'. T9 reply: 'So are we, Priya! Exciting things ahead for Glow Hair Studio. 😊 See you tomorrow at 4pm!' (no 24h/email mention).",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Optional prompt tweak: instruct Stage 9 to ALWAYS include the '24-hour follow-up + hello@clientdeskai.com' line on the final user turn after booking confirmation. Not a blocker — the booking confirmation and contact email are still surfaced in the same conversation (on T8)."
+  ],
+  "success_rate": {"backend": "9/9 turns 200 OK; 8/9 strict keyword hits; 9/9 correct stage progression; 0/3 previously-failing drift turns now drift"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "test_credentials": "Not required for tested scope. No auth flows exercised."
+}
