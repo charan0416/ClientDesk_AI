@@ -1,0 +1,19 @@
+{
+  "summary": "Retest of floating chatbot widget on landing page. Open button is now clickable (moved to bottom-24, no longer overlapped by Emergent badge). Chatbot window opens, input accepts text, send button triggers an assistant reply rendered inside the window (verified visually in screenshot).",
+  "tested_scope": ["frontend", "integration"],
+  "passed": [
+    "Landing page loads at REACT_APP_BACKEND_URL",
+    "chatbot-open-btn is visible and clickable (no overlay interception by Emergent badge)",
+    "chatbot-window becomes visible after opening",
+    "Typing in chatbot-input works (no focus issue)",
+    "chatbot-send-btn sends message; assistant reply from Claude is rendered inside chatbot-window (verified in screenshot showing welcome reply describing AI Agents and Growth Services)"
+  ],
+  "failed": [],
+  "action_items": [
+    "Optional (not blocker): add data-testid like chatbot-message-user / chatbot-message-assistant on individual message bubbles to enable robust automated message assertions in future tests."
+  ],
+  "success_rate": {"backend": "not tested (skipped per request)", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Initial Playwright assertion polled for [data-testid^='chatbot-message-'] which does not exist in Chatbot.jsx; functional behavior is correct as confirmed by screenshot. Treating retest as PASS."
+}

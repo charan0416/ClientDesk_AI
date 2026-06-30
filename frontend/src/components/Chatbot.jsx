@@ -54,7 +54,7 @@ export default function Chatbot() {
         <button
           data-testid="chatbot-open-btn"
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-[#00FF66] text-black flex items-center justify-center shadow-[0_0_30px_rgba(0,255,102,0.55)] hover:scale-105 transition pulse-ring"
+          className="fixed bottom-24 right-6 z-50 w-16 h-16 rounded-full bg-[#00FF66] text-black flex items-center justify-center shadow-[0_0_30px_rgba(0,255,102,0.55)] hover:scale-105 transition pulse-ring"
           aria-label="Open chat"
         >
           <MessageCircle size={26} />
@@ -64,7 +64,7 @@ export default function Chatbot() {
       {open && (
         <div
           data-testid="chatbot-window"
-          className="fixed bottom-6 right-6 z-50 w-[92vw] max-w-[400px] h-[70vh] max-h-[600px] bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+          className="fixed bottom-24 right-6 z-50 w-[92vw] max-w-[400px] h-[70vh] max-h-[600px] bg-[#0A0A0A] border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
         >
           <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between bg-[#0F0F0F]">
             <div className="flex items-center gap-2">
