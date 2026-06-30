@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { api } from "../lib/api";
 
@@ -64,7 +65,30 @@ export default function Chatbot() {
             {messages.map((m) => (
               <div key={m.id} data-testid={`chatbot-message-${m.role}`} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user" ? "bg-[#00E27A] text-[#051910] rounded-br-sm" : "bg-[#15171C] text-white/90 border border-white/[0.06] rounded-bl-sm"}`}>
-                  {m.content}
+                  {m.role === "assistant" ? (
+                    <div className="chat-md">
+                      <ReactMarkdown
+                        components={{
+                          p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                          ul: ({node, ...props}) => <ul className="list-disc pl-4 my-2 space-y-1" {...props} />,
+                          ol: ({node, ...props}) => <ol className="list-decimal pl-4 my-2 space-y-1" {...props} />,
+                          li: ({node, ...props}) => <li className="leading-snug" {...props} />,
+                          strong: ({node, ...props}) => <strong className="text-white font-semibold" {...props} />,
+                          em: ({node, ...props}) => <em className="text-white/90" {...props} />,
+                          h1: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
+                          h2: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
+                          h3: ({node, ...props}) => <p className="text-white font-semibold mb-1" {...props} />,
+                          hr: () => <div className="my-2 border-t border-white/10" />,
+                          a: ({node, ...props}) => <a className="text-[#00E27A] underline-offset-2 hover:underline" target="_blank" rel="noreferrer" {...props} />,
+                          code: ({node, ...props}) => <code className="px-1 py-0.5 rounded bg-white/[0.06] text-[#00E27A] font-mono text-[12px]" {...props} />,
+                        }}
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
             ))}
