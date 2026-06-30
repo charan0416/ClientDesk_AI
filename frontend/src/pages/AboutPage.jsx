@@ -1,51 +1,51 @@
 import React from "react";
-import { Target, Sparkles, Heart } from "lucide-react";
+import { Target, Sparkles, Heart, Users } from "lucide-react";
 import ContactSection from "../components/ContactSection";
+import FinalCTA from "../components/FinalCTA";
+import useReveal from "../hooks/useReveal";
 
 export default function AboutPage() {
+  useReveal();
   return (
     <div data-testid="about-page" className="pt-28">
-      <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="section-label">About ClientDesk AI</span>
-            <h1 className="font-display font-semibold text-4xl md:text-6xl mt-4 tracking-tighter leading-tight">
-              We build the AI <span className="text-[#00FF66]">your business should have hired yesterday.</span>
+      <section className="py-16 md:py-24">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-start">
+          <div className="reveal">
+            <span className="eyebrow">About</span>
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl mt-4 leading-[1.02] text-white text-balance">
+              We build the AI your business should have hired yesterday.
             </h1>
-            <p className="mt-6 text-white/70 text-lg max-w-xl">
-              ClientDesk AI was founded to put enterprise-grade AI into the hands of every ambitious business -
-              clinics, agencies, real estate, retail, services. We replace the busywork so founders can do the work that grows.
+            <p className="mt-6 text-white/65 text-lg max-w-xl">
+              ClientDesk AI was founded to put enterprise-grade AI in the hands of every ambitious business —
+              clinics, agencies, real estate, retail and services. We replace the busywork so founders can do the work that grows.
             </p>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-[#00FF66]/20 to-[#00E5FF]/10 blur-2xl"/>
-            <img
-              src="https://images.pexels.com/photos/273682/pexels-photo-273682.jpeg"
-              alt="ClientDesk AI"
-              className="relative w-full h-96 object-cover rounded-3xl border border-white/10"
-            />
+          <div className="relative reveal">
+            <div className="mock-window overflow-hidden">
+              <img src="https://images.pexels.com/photos/273682/pexels-photo-273682.jpeg" alt="ClientDesk AI" className="w-full h-[420px] object-cover"/>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#070707] border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-6">
+      <section className="py-20 border-t border-white/[0.06]">
+        <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-px bg-white/[0.06] rounded-2xl overflow-hidden border border-white/[0.06]">
           {[
-            { Icon: Target, t: "Mission", d: "Help every business grow smarter with AI - not more headcount." },
-            { Icon: Sparkles, t: "Vision", d: "By 2030, every customer interaction starts with an AI agent." },
+            { Icon: Target, t: "Mission", d: "Make AI growth tooling accessible to every business — not just enterprises." },
+            { Icon: Sparkles, t: "Vision", d: "By 2030, every customer touchpoint begins with an AI agent." },
             { Icon: Heart, t: "Values", d: "Honest selling. Fast delivery. Outcomes over output." },
+            { Icon: Users, t: "Team", d: "Operators, engineers and designers from Stripe, Razorpay, Freshworks and Zomato alumni." },
           ].map(({ Icon, t, d }) => (
-            <div key={t} className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-7 hover:border-[#00FF66]/30 transition">
-              <div className="w-11 h-11 rounded-xl bg-[#00FF66]/10 border border-[#00FF66]/20 flex items-center justify-center text-[#00FF66] mb-4">
-                <Icon size={20}/>
-              </div>
-              <h3 className="font-display font-semibold text-xl text-white mb-2">{t}</h3>
-              <p className="text-white/65">{d}</p>
+            <div key={t} className="bg-[#0A0B0E] p-7 reveal">
+              <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[#00E27A] mb-5"><Icon size={17}/></div>
+              <h3 className="font-display text-lg text-white tracking-tight">{t}</h3>
+              <p className="mt-2 text-sm text-white/55 leading-relaxed">{d}</p>
             </div>
           ))}
         </div>
       </section>
 
+      <FinalCTA />
       <ContactSection />
     </div>
   );

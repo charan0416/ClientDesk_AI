@@ -1,166 +1,200 @@
-@import url("https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700,900&f[]=jetbrains-mono@400,500&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700&f[]=jetbrains-mono@400,500&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    --bg-base: #050505;
-    --bg-surface: #0a0a0a;
-    --bg-elevated: #121212;
-    --accent-green: #00ff66;
-    --accent-green-hover: #00cc52;
-    --accent-cyan: #00e5ff;
-    --text-primary: #f3f4f6;
-    --text-secondary: #9ca3af;
+    --bg: #08090B;
+    --bg-2: #0C0D10;
+    --surface: #111216;
+    --surface-2: #16181D;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
+    --text: #EDEEF0;
+    --text-muted: #A1A4AC;
+    --text-dim: #6B6F77;
+    --accent: #00E27A;
+    --accent-soft: rgba(0, 226, 122, 0.12);
+    --accent-line: rgba(0, 226, 122, 0.35);
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
-    background: var(--bg-base);
-    color: var(--text-primary);
-    font-family:
-        "Satoshi", -apple-system, BlinkMacSystemFont, sans-serif;
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv11";
+    letter-spacing: -0.005em;
 }
 
 .font-display {
     font-family: "Clash Display", sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    font-weight: 600;
 }
 
-.font-mono {
-    font-family: "JetBrains Mono", monospace;
-}
+.font-mono { font-family: "JetBrains Mono", monospace; }
 
-/* Grain overlay */
-.grain::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-
-/* Glow utilities */
-.glow-green {
-    box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
-}
-.glow-green-lg {
-    box-shadow: 0 0 30px rgba(0, 255, 102, 0.45);
-}
-.text-glow-green {
-    text-shadow: 0 0 18px rgba(0, 255, 102, 0.45);
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #0a0a0a;
-}
-::-webkit-scrollbar-thumb {
-    background: #1f1f1f;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #00ff66;
-}
-
-/* Section heading underline */
-.section-label {
+.eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-family: "JetBrains Mono", monospace;
     text-transform: uppercase;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.18em;
     font-size: 11px;
-    color: #00ff66;
+    color: var(--accent);
 }
-.section-label::before {
+.eyebrow::before {
     content: "";
-    width: 24px;
+    width: 22px;
     height: 1px;
-    background: #00ff66;
+    background: var(--accent);
 }
 
-/* Animations */
-@keyframes float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-8px);
-    }
+.text-balance { text-wrap: balance; }
+
+/* Subtle hover lift */
+.lift {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background-color 0.3s ease;
 }
-.animate-float {
-    animation: float 4s ease-in-out infinite;
+.lift:hover { transform: translateY(-2px); }
+
+/* Soft glow only on primary CTA */
+.btn-primary {
+    background: var(--accent);
+    color: #051910;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 12px 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.2s ease;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 8px 24px -8px rgba(0, 226, 122, 0.35);
+}
+.btn-primary:hover {
+    background: #00C76B;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 14px 30px -8px rgba(0, 226, 122, 0.5);
+}
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 11px 21px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+.btn-secondary:hover { border-color: rgba(255, 255, 255, 0.28); background: rgba(255, 255, 255, 0.03); }
+
+/* Card */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.card:hover { border-color: var(--line-strong); background: var(--surface-2); }
+
+/* Hairline section dividers */
+.hairline {
+    position: relative;
+}
+.hairline::before, .hairline::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1280px;
+    height: 1px;
+    background: var(--line);
+}
+.hairline::before { top: 0; }
+.hairline::after { bottom: 0; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #1E2026; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #2A2D34; }
+::selection { background: var(--accent); color: #051910; }
+
+/* Fade-up on scroll */
+.reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.in {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-@keyframes pulse-ring {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.6);
-    }
-    70% {
-        box-shadow: 0 0 0 16px rgba(0, 255, 102, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 102, 0);
-    }
-}
-.pulse-ring {
-    animation: pulse-ring 2s infinite;
-}
-
+/* Marquee */
 @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
 }
-.animate-marquee {
-    animation: marquee 30s linear infinite;
+.animate-marquee { animation: marquee 40s linear infinite; }
+
+/* Subtle radial highlight for hero */
+.hero-aura {
+    background:
+        radial-gradient(60% 50% at 50% 0%, rgba(0, 226, 122, 0.10), transparent 70%),
+        radial-gradient(45% 50% at 90% 30%, rgba(0, 229, 255, 0.05), transparent 70%);
 }
 
-/* Selection */
-::selection {
-    background: #00ff66;
-    color: #050505;
+/* Grid background */
+.grid-bg {
+    background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 75% 60% at 50% 35%, black 40%, transparent 75%);
+}
+
+/* Mock dashboard styles */
+.mock-window {
+    background: linear-gradient(180deg, #0F1015 0%, #0B0C10 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 @layer base {
     :root {
-        --background: 0 0% 2%;
-        --foreground: 0 0% 96%;
-        --card: 0 0% 4%;
-        --card-foreground: 0 0% 96%;
-        --popover: 0 0% 4%;
-        --popover-foreground: 0 0% 96%;
-        --primary: 140 100% 50%;
-        --primary-foreground: 0 0% 4%;
-        --secondary: 0 0% 10%;
-        --secondary-foreground: 0 0% 96%;
-        --muted: 0 0% 10%;
-        --muted-foreground: 0 0% 60%;
-        --accent: 140 100% 50%;
-        --accent-foreground: 0 0% 4%;
+        --background: 222 13% 4%;
+        --foreground: 220 5% 92%;
+        --card: 222 13% 6%;
+        --card-foreground: 220 5% 92%;
+        --popover: 222 13% 6%;
+        --popover-foreground: 220 5% 92%;
+        --primary: 150 100% 44%;
+        --primary-foreground: 150 70% 6%;
+        --secondary: 222 8% 12%;
+        --secondary-foreground: 220 5% 92%;
+        --muted: 222 8% 12%;
+        --muted-foreground: 220 5% 65%;
+        --accent: 150 100% 44%;
+        --accent-foreground: 150 70% 6%;
         --destructive: 0 70% 50%;
         --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 15%;
-        --input: 0 0% 12%;
-        --ring: 140 100% 50%;
-        --radius: 0.75rem;
+        --border: 222 8% 14%;
+        --input: 222 8% 14%;
+        --ring: 150 100% 44%;
+        --radius: 0.875rem;
     }
 }

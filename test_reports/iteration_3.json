@@ -1,0 +1,23 @@
+{
+  "summary": "Comprehensive smoke test of the redesigned ClientDesk AI landing page, key flows, service detail page, admin dashboard, chatbot, and backend endpoints. All 8 frontend flows and all 3 backend endpoints passed. End-to-end integration verified: contact form submission created a lead visible in the admin dashboard.",
+  "tested_scope": ["frontend", "backend", "auth", "integration"],
+  "passed": [
+    "Backend POST /api/leads returns 200 with lead ID and persisted fields",
+    "Backend POST /api/chat returns 200 with AI reply",
+    "Backend POST /api/admin/login returns 200 with JWT token",
+    "Landing page renders all 10 redesigned sections (hero, pillars, services, how-it-works, case-studies, testimonials, pricing, faq, final-cta, contact)",
+    "Pricing renders 3 tiers (Starter/Growth/Enterprise) with 'Most popular' badge on Growth",
+    "FAQ accordion expand/collapse works (faq-0)",
+    "Navbar/Hero CTA 'hero-cta-primary' navigates to /contact",
+    "Contact form submits successfully and shows contact-success state",
+    "Floating chatbot opens (chatbot-open-btn) and returns AI reply",
+    "Service detail /service/ai-receptionist loads with title and embedded contact form",
+    "Admin login (admin@clientdeskai.com / ClientDesk@2026) redirects to /admin with leads + appointments tables populated"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Verified integration loop: lead submitted via contact form 'T1 Tester' appeared in /admin dashboard leads table immediately. Accent color #00E27A applied consistently. Test credentials from /app/memory/test_credentials.md used."
+}

@@ -2,65 +2,62 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { aiAgents, growthServices } from "../data/services";
+import useReveal from "../hooks/useReveal";
 
-function ServiceCard({ s, featured }) {
+function ServiceCard({ s, large }) {
   const Icon = s.icon;
   return (
     <Link
       to={`/service/${s.slug}`}
       data-testid={`service-card-${s.slug}`}
-      className={`group relative block bg-[#0A0A0A] border border-white/5 hover:border-[#00FF66]/40 rounded-2xl p-6 md:p-8 transition-all hover:-translate-y-1 overflow-hidden ${
-        featured ? "md:col-span-2 md:row-span-1" : ""
-      }`}
+      className={`group relative block card lift p-7 md:p-8 reveal ${large ? "md:col-span-2" : ""}`}
     >
-      <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#00FF66]/5 blur-3xl group-hover:bg-[#00FF66]/10 transition" />
-      <div className="relative">
-        <div className="flex items-center justify-between mb-5">
-          <div className="w-12 h-12 rounded-xl bg-[#00FF66]/10 border border-[#00FF66]/20 flex items-center justify-center text-[#00FF66] group-hover:bg-[#00FF66] group-hover:text-black transition">
-            <Icon size={22} />
-          </div>
-          <ArrowUpRight size={20} className="text-white/40 group-hover:text-[#00FF66] group-hover:rotate-12 transition" />
+      <div className="flex items-start justify-between mb-8">
+        <div className="w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-[#00E27A]">
+          <Icon size={18} />
         </div>
-        <h3 className="font-display font-semibold text-xl md:text-2xl text-white mb-3 tracking-tight">
-          {s.title}
-        </h3>
-        <p className="text-sm text-white/60 leading-relaxed">{s.short}</p>
+        <ArrowUpRight size={16} className="text-white/30 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
       </div>
+      <h3 className="font-display text-[20px] md:text-[22px] text-white tracking-tight">
+        {s.title}
+      </h3>
+      <p className="mt-2.5 text-sm text-white/55 leading-relaxed">{s.short}</p>
     </Link>
   );
 }
 
 export default function ServicesGrid() {
+  useReveal();
   return (
     <section data-testid="services-section" className="py-24 md:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 max-w-3xl">
-          <span className="section-label">Our AI Agents</span>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl mt-4 tracking-tighter">
-            A digital workforce. <span className="text-[#00FF66]">Hired in 7 days.</span>
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8">
+        <div className="mb-14 max-w-3xl reveal">
+          <span className="eyebrow">The AI Workforce</span>
+          <h2 className="font-display text-4xl md:text-5xl lg:text-[56px] mt-4 leading-[1.05] text-white text-balance">
+            Six AI agents. One unified team.
           </h2>
-          <p className="mt-4 text-white/60 text-base md:text-lg">
-            Six specialist AI agents that work 24/7, never call in sick, and cost a fraction of a human team.
+          <p className="mt-5 text-white/60 text-lg max-w-2xl">
+            Purpose-built agents trained on your business, your tone, your offers — ready in 7 days.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {aiAgents.map((s, i) => (
-            <ServiceCard key={s.slug} s={s} featured={i === 0} />
+            <ServiceCard key={s.slug} s={s} large={i === 0} />
           ))}
         </div>
 
-        <div className="mt-24 mb-16 max-w-3xl">
-          <span className="section-label">Growth Services</span>
-          <h2 className="font-display font-semibold text-4xl md:text-5xl lg:text-6xl mt-4 tracking-tighter">
-            Full-stack growth. <span className="text-[#00FF66]">Zero guesswork.</span>
+        <div className="mt-28 mb-14 max-w-3xl reveal">
+          <span className="eyebrow">Growth Engine</span>
+          <h2 className="font-display text-4xl md:text-5xl lg:text-[56px] mt-4 leading-[1.05] text-white text-balance">
+            Eight growth plays. Fully orchestrated.
           </h2>
-          <p className="mt-4 text-white/60 text-base md:text-lg">
-            Conversion-first websites, WhatsApp automation, ads, SEO and reporting - all wired together so every lead lands in your CRM.
+          <p className="mt-5 text-white/60 text-lg max-w-2xl">
+            Conversion-first websites, WhatsApp automation, ads, SEO and monthly reporting — wired together so every lead lands in your CRM.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {growthServices.map((s) => (
             <ServiceCard key={s.slug} s={s} />
           ))}
