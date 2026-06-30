@@ -94,14 +94,19 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-[#0A0A0A] border border-white/5 rounded-2xl overflow-hidden">
-          {loading ? (
-            <div className="p-10 text-white/50 text-center">Loading...</div>
-          ) : tab === "leads" ? (
-            leads.length === 0 ? (
-              <div className="p-10 text-center text-white/50 flex flex-col items-center gap-2">
-                <Inbox size={28}/> No leads yet.
-              </div>
-            ) : (
+          {(() => {
+            if (loading) {
+              return <div className="p-10 text-white/50 text-center">Loading...</div>;
+            }
+            if (tab === "leads") {
+              if (leads.length === 0) {
+                return (
+                  <div className="p-10 text-center text-white/50 flex flex-col items-center gap-2">
+                    <Inbox size={28}/> No leads yet.
+                  </div>
+                );
+              }
+              return (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm" data-testid="leads-table">
                   <thead className="bg-[#0F0F0F] text-white/50 text-left">
@@ -128,12 +133,17 @@ export default function AdminDashboard() {
                   </tbody>
                 </table>
               </div>
-            )
-          ) : appts.length === 0 ? (
-            <div className="p-10 text-center text-white/50 flex flex-col items-center gap-2">
-              <Inbox size={28}/> No appointments yet.
-            </div>
-          ) : (
+              );
+            }
+            // Appointments tab
+            if (appts.length === 0) {
+              return (
+                <div className="p-10 text-center text-white/50 flex flex-col items-center gap-2">
+                  <Inbox size={28}/> No appointments yet.
+                </div>
+              );
+            }
+            return (
             <div className="overflow-x-auto">
               <table className="w-full text-sm" data-testid="appointments-table">
                 <thead className="bg-[#0F0F0F] text-white/50 text-left">
@@ -160,7 +170,8 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </div>
