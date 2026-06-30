@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Users, Calendar, MessageSquare, Inbox } from "lucide-react";
 import { adminApi } from "../lib/api";
@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const a = adminApi();
       const [l, ap, st] = await Promise.all([
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     if (!localStorage.getItem("cdai_admin_token")) {
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       return;
     }
     load();
-  }, []);
+  }, [navigate, load]);
 
   const logout = () => {
     localStorage.removeItem("cdai_admin_token");

@@ -1,0 +1,36 @@
+{
+  "summary": "Code-review fix regression smoke test. Backend: /api/chat returns 200 with non-empty reply (reply_text init fix verified). Admin login returns valid JWT and protected endpoints (stats=5/1/7, leads, appointments) all return 200. Frontend: Service detail page renders benefits OK (new composite keys, 0 React key warnings). Admin login at /admin/login successfully redirects to /admin and the stats cards render (useCallback/useEffect deps not broken). Contact form submits without errors. Chatbot opens and sends a message (input cleared after submit), but the user message bubble does not appear to render in the chat list - potential regression from the unique-id refactor.",
+  "tested_scope": ["backend", "frontend", "auth", "integration"],
+  "passed": [
+    "POST /api/chat -> 200 with non-empty reply (welcome/services response, includes session_id)",
+    "POST /api/admin/login -> 200, JWT token returned (149 chars)",
+    "GET /api/admin/stats with Bearer token -> 200 {total_leads:5,total_appointments:1,total_chats:7}",
+    "GET /api/admin/leads -> 200 with lead array",
+    "GET /api/admin/appointments -> 200 with appointment array",
+    "GET /service/ai-receptionist renders benefits content, 0 React key console warnings",
+    "Admin login flow (UI) -> /admin loads with Dashboard, Leads/Appointments tabs, stats cards rendered",
+    "Contact form (/contact) submitted via testids contact-input-name/email/phone/message; no errors thrown",
+    "No 'each child should have a unique key' React warnings observed in console across tested pages"
+  ],
+  "failed": [
+    {
+      "area": "Chatbot UI",
+      "issue": "After typing a message and clicking send, the input is cleared (so submit fired) but the user's message bubble does not appear in the chat list (body.innerText search for typed text returns false). Only the initial welcome bubble is visible after send. Could be a regression in the unique-id refactor (e.g., user message not pushed into messages state, or id collision filtering it out).",
+      "evidence": "After page.fill('test from t1') + send click, input shows placeholder again, but body text tail only contains welcome bubble; no 'test from t1' or assistant reply visible. Console shows no React warnings.",
+      "priority": "HIGH"
+    },
+    {
+      "area": "Admin Dashboard data load (possible)",
+      "issue": "Dashboard renders stat cards as 0/0/0 with 'Loading...' under tables in the captured screenshot, while the same backend stats API returns 5/1/7 with a valid JWT from CLI. May indicate load() did not complete by the time of capture, or token/localStorage mismatch after the useCallback dep change. Needs visual re-check.",
+      "evidence": "Screenshot of /admin shows TOTAL LEADS 0, APPOINTMENTS 0, CHAT SESSIONS 0 and 'Loading...' even after networkidle wait. Backend /api/admin/stats returns {total_leads:5,total_appointments:1,total_chats:7} when called directly.",
+      "priority": "MEDIUM"
+    }
+  ],
+  "action_items": [
+    "Inspect Chatbot.jsx send handler: ensure user message {id: 'u_'+..., role:'user', content} is being appended to messages BEFORE the await fetch call, and that the unique-id generator doesn't collide or skip. Verify the map uses key={m.id} and renders both role==='user' and role==='assistant' bubbles.",
+    "Verify AdminDashboard load() actually fetches and sets state after the useCallback+[navigate,load] change. Check that load isn't being re-created every render causing an effect loop or that the token from localStorage is read before fetch. Reproduce by logging in via UI and watching network tab for /api/admin/stats|leads|appointments requests."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "~70%"},
+  "retest_needed": true,
+  "full_testing_deferred": true
+}

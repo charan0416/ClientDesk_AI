@@ -11,7 +11,7 @@ function getSessionId() {
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I'm the ClientDesk AI assistant. Tell me what you do and I'll show you exactly how we can help you grow. What's your business?" },
+    { id: "welcome", role: "assistant", content: "Hi! I'm the ClientDesk AI assistant. Tell me what you do and I'll show you exactly how we can help you grow. What's your business?" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,14 +25,17 @@ export default function Chatbot() {
   const send = async () => {
     const text = input.trim();
     if (!text || loading) return;
-    setMessages((m) => [...m, { role: "user", content: text }]);
+    const userId = `u_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    setMessages((m) => [...m, { id: userId, role: "user", content: text }]);
     setInput("");
     setLoading(true);
     try {
       const res = await api.post("/chat", { session_id: sessionId.current, message: text });
-      setMessages((m) => [...m, { role: "assistant", content: res.data.reply }]);
+      const botId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      setMessages((m) => [...m, { id: botId, role: "assistant", content: res.data.reply }]);
     } catch {
-      setMessages((m) => [...m, { role: "assistant", content: "Sorry, I hit a snag. Please try again or email hello@clientdeskai.com." }]);
+      const errId = `e_${Date.now()}`;
+      setMessages((m) => [...m, { id: errId, role: "assistant", content: "Sorry, I hit a snag. Please try again or email hello@clientdeskai.com." }]);
     } finally { setLoading(false); }
   };
 
@@ -58,8 +61,8 @@ export default function Chatbot() {
             <button data-testid="chatbot-close-btn" onClick={() => setOpen(false)} className="text-white/55 hover:text-white" aria-label="Close chat"><X size={17}/></button>
           </div>
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            {messages.map((m) => (
+              <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user" ? "bg-[#00E27A] text-[#051910] rounded-br-sm" : "bg-[#15171C] text-white/90 border border-white/[0.06] rounded-bl-sm"}`}>
                   {m.content}
                 </div>

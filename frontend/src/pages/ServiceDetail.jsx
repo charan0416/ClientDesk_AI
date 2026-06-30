@@ -52,7 +52,7 @@ export default function ServiceDetail() {
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             {service.benefits.map((b, i) => (
-              <div key={i} data-testid={`benefit-${i}`} className="card p-6 flex items-start gap-4 reveal">
+              <div key={`${service.slug}-benefit-${i}`} data-testid={`benefit-${i}`} className="card p-6 flex items-start gap-4 reveal">
                 <div className="w-8 h-8 rounded-lg bg-[#00E27A] text-[#051910] flex items-center justify-center shrink-0"><Check size={14}/></div>
                 <p className="text-white/85 leading-relaxed">{b}</p>
               </div>

@@ -91,7 +91,7 @@ class LoginRequest(BaseModel):
 def create_token(email: str) -> str:
     payload = {
         "email": email,
-        "exp": datetime.now(timezone.utc) + timedelta(days=7),
+        "exp": datetime.now(timezone.utc) + timedelta(days=1),
     }
     return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 
@@ -156,6 +156,9 @@ async def chat(req: ChatRequest):
     except Exception as e:
         logger.exception("LLM error")
         raise HTTPException(status_code=500, detail=f"LLM error: {str(e)}")
+
+    if not reply_text:
+        reply_text = "Sorry, I couldn't generate a response right now. Please try again."
 
     # Save assistant message
     bot_msg = ChatMessage(session_id=req.session_id, role="assistant", content=reply_text)
